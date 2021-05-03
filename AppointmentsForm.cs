@@ -26,15 +26,15 @@ namespace C969_Richard_Menz
         }
 
         public void UpdateSelection()
-        {
-            if(monthSelected)
-            {
-                updateViewWithMonthlySelected();
-            } 
-            else
-            {
-                updateViewWithWeeklySelected();
-            }
+        { //May not be needed
+            //if (monthSelected)
+            //{
+            //    updateViewWithMonthlySelected();
+            //}
+            //else
+            //{
+            //    updateViewWithWeeklySelected();
+            //}
         }
 
         private void backButton_Click(object sender, EventArgs e)
@@ -129,8 +129,10 @@ namespace C969_Richard_Menz
         }
 
         private void AppointmentsForm_Load(object sender, EventArgs e)
-        {
-            updateViewWithMonthlySelected();
+        { 
+            //updateViewWithMonthlySelected(); #old
+            // Load date time for today appointments
+            appointmentDataGridView.DataSource = getAppointmentsInTimePeriod(new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day), new DateTime(SelectedDate.Year, SelectedDate.Month, SelectedDate.Day+1));
         }
 
         private DateTime findBeginningOfWeek(DateTime date)
@@ -163,6 +165,11 @@ namespace C969_Richard_Menz
         {
             //used the following lambda in linq statement to recreate list of Appointments that fall within the begin and end time bounds.
             return new BindingList<Appointment>(MainScreen.ListOfAppointments.Where(appt => appt.Start >= beginTime && appt.End <= endTime).ToList());
+        }
+
+        private BindingList<Appointment> getAppointmentsByCustomerId(int id)
+        { //return a list of appointsment for a datagrid view based on customerID
+            return new BindingList<Appointment>(MainScreen.ListOfAppointments.Where(appt => appt.CustomerId == id).ToList());
         }
 
         private void monthRadioButton_CheckedChanged(object sender, EventArgs e)
@@ -209,6 +216,11 @@ namespace C969_Richard_Menz
             DateTime beginningOfWeek = findBeginningOfWeek(SelectedDate);
             DateTime endOfWeek = findEndOfWeek(SelectedDate);
             appointmentDataGridView.DataSource = getAppointmentsInTimePeriod(beginningOfWeek, endOfWeek);
+        }
+
+        private void updateViewWithSearchedId(int id)
+        {
+            appointmentDataGridView.DataSource = getAppointmentsByCustomerId(id);
         }
     }
 }
